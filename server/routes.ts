@@ -168,7 +168,7 @@ export async function registerRoutes(
           return res.status(400).json({ message: "Each tag must be a non-empty string under 30 characters" });
         }
       }
-      const article = await storage.updateArticle(req.params.id, req.session.userId!, {
+      const article = await storage.updateArticle(String(req.params.id), req.session.userId!, {
         ...(title !== undefined && { title: title.trim() }),
         ...(content !== undefined && { content }),
         ...(subtitle !== undefined && { subtitle: subtitle?.trim() || "" }),
@@ -186,7 +186,7 @@ export async function registerRoutes(
   });
 
   app.delete("/api/articles/:id", requireAuth, async (req, res) => {
-    const deleted = await storage.deleteArticle(req.params.id, req.session.userId!);
+    const deleted = await storage.deleteArticle(String(req.params.id), req.session.userId!);
     if (!deleted) {
       return res.status(404).json({ message: "Article not found" });
     }
@@ -194,12 +194,12 @@ export async function registerRoutes(
   });
 
   app.post("/api/articles/:id/clap", requireAuth, async (req, res) => {
-    await storage.toggleClap(req.params.id, req.session.userId!);
+    await storage.toggleClap(String(req.params.id), req.session.userId!);
     res.json({ message: "Toggled" });
   });
 
   app.post("/api/articles/:id/bookmark", requireAuth, async (req, res) => {
-    await storage.toggleBookmark(req.params.id, req.session.userId!);
+    await storage.toggleBookmark(String(req.params.id), req.session.userId!);
     res.json({ message: "Toggled" });
   });
 
@@ -217,7 +217,7 @@ export async function registerRoutes(
       if (content.length > 5000) {
         return res.status(400).json({ message: "Comment too long" });
       }
-      const comment = await storage.addComment(req.params.id, req.session.userId!, content.trim());
+      const comment = await storage.addComment(String(req.params.id), req.session.userId!, content.trim());
       res.json(comment);
     } catch (err: any) {
       res.status(500).json({ message: err.message });
@@ -248,7 +248,7 @@ export async function registerRoutes(
   });
 
   app.post("/api/users/:username/follow", requireAuth, async (req, res) => {
-    const user = await storage.getUserByUsername(req.params.username);
+    const user = await storage.getUserByUsername(String(req.params.username));
     if (!user) {
       return res.status(404).json({ message: "User not found" });
     }
