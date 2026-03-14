@@ -12,6 +12,9 @@ declare module "http" {
     rawBody: unknown;
   }
 }
+app.get("/", (req, res) => {
+  res.json({ status: "Inkflow API running" });
+});
 
 app.use(
   express.json({
@@ -64,7 +67,9 @@ app.use((req, res, next) => {
   await registerRoutes(httpServer, app);
 
   try {
-    await seedDatabase();
+    if (process.env.NODE_ENV !== "production") {
+      await seedDatabase();
+    }
   } catch (e) {
     console.error("Seed error:", e);
   }
