@@ -13,6 +13,7 @@ app.use(
       "http://localhost:5173",
       "http://localhost:3000",
       "https://inkflow-blog.vercel.app",
+      "https://inkflow-eight.vercel.app",
       process.env.FRONTEND_URL || "",
     ].filter(Boolean),
     credentials: true,
